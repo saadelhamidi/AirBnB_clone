@@ -2,7 +2,7 @@
 """
 Command interpreter module
 """
-mport cmd
+import cmd
 import os
 import re
 import sys
