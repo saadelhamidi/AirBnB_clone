@@ -1,66 +1,105 @@
 #!/usr/bin/python3
 """
-Unittests for the BaseModel class.
+Command interpreter module
 """
-
-import unittest
+import cmd
 from models.base_model import BaseModel
-from datetime import datetime
-import uuid
+from models.file_storage import FileStorage
+
+storage = FileStorage()
+storage.reload()
 
 
-class TestBaseModel(unittest.TestCase):
+class HBNBCommand(cmd.Cmd):
     """
-    Test cases for the BaseModel class.
+    Command interpreter class to manage AirBnB objects
     """
+    prompt = '(hbnb) '
 
-    def setUp(self):
-        """
-        Set up for the tests.
-        """
-        self.model = BaseModel()
+    def do_quit(self, arg):
+        """Quit command to exit the program"""
+        return True
 
-    def test_instance_creation(self):
-        """
-        Test if an instance of BaseModel is correctly created.
-        """
-        self.assertIsInstance(self.model, BaseModel)
-        self.assertIsInstance(self.model.id, str)
-        self.assertIsInstance(self.model.created_at, datetime)
-        self.assertIsInstance(self.model.updated_at, datetime)
+    def do_EOF(self, arg):
+        """EOF command to exit the program"""
+        return True
 
-    def test_str_method(self):
-        """
-        Test the __str__ method of the BaseModel.
-        """
-        expected_str = "[BaseModel] ({}) {}".format(self.model.id,
-                                                    self.model.__dict__)
-        self.assertEqual(str(self.model), expected_str)
+    def emptyline(self):
+        pass
 
-    def test_save_method(self):
-        """
-        Test the save method of the BaseModel.
-        """
-        old_updated_at = self.model.updated_at
-        self.model.save()
-        self.assertNotEqual(old_updated_at, self.model.updated_at)
-        self.assertIsInstance(self.model.updated_at, datetime)
+    def do_create(self, arg):
+        """Create a new instance of BaseModel"""
+        if arg:
+            try:
+                new_instance = eval(arg)()
+                new_instance.save()
+                storage.new(new_instance)
+                storage.save()
+                print(new_instance.id)
+            except NameError:
+                print("** class doesn't exist **")
+        else:
+            print("** class name missing **")
 
-    def test_to_dict_method(self):
-        """
-        Test the to_dict method of the BaseModel.
-        """
-        model_dict = self.model.to_dict()
-        self.assertEqual(model_dict['__class__'], 'BaseModel')
-        self.assertEqual(model_dict['id'], self.model.id)
-        self.assertEqual(model_dict['created_at'],
-                         self.model.created_at.isoformat())
-        self.assertEqual(model_dict['updated_at'],
-                         self.model.updated_at.isoformat())
-        self.assertIsInstance(model_dict['created_at'], str)
-        self.assertIsInstance(model_dict['updated_at'], str)
+    def do_show(self, arg):
+        """Show an instance of a class based on its id"""
+        args = arg.split()
+        if len(args) < 1:
+            print("** class name missing **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        else:
+            key = f"{args[0]}.{args[1]}"
+            if key in storage.all():
+                print(storage.all()[key])
+            else:
+                print("** no instance found **")
+
+    def do_destroy(self, arg):
+        """Destroy an instance based on its id"""
+        args = arg.split()
+        if len(args) < 1:
+            print("** class name missing **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        else:
+            key = f"{args[0]}.{args[1]}"
+            if key in storage.all():
+                del storage.all()[key]
+                storage.save()
+            else:
+                print("** no instance found **")
+
+    def do_all(self, arg):
+        """Show all instances or all instances of a class"""
+        if arg:
+            print([str(obj) for obj in storage.all().values()
+                   if obj.__class__.__name__ == arg])
+        else:
+            print([str(obj) for obj in storage.all().values()])
+
+    def do_update(self, arg):
+        """Update an instance based on its id"""
+        args = arg.split()
+        if len(args) < 1:
+            print("** class name missing **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        elif len(args) < 3:
+            print("** attribute name missing **")
+        elif len(args) < 4:
+            print("** value missing **")
+        else:
+            key = f"{args[0]}.{args[1]}"
+            if key in storage.all():
+                obj = storage.all()[key]
+                setattr(obj, args[2], args[3])
+                obj.save()
+                storage.save()
+            else:
+                print("** no instance found **")
 
 
 if __name__ == '__main__':
-    unittest.main()
+    HBNBCommand().cmdloop()
 

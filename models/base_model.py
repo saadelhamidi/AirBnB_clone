@@ -1,54 +1,53 @@
 #!/usr/bin/python3
 """
-Module base_model
+BaseModel module
 """
-
 import uuid
 from datetime import datetime
 
 
 class BaseModel:
     """
-    A base class for all models in our AirBnB clone.
+    Base class for all models, providing common attributes and methods.
     """
-
     def __init__(self, *args, **kwargs):
         """
-        Initialize a new instance of BaseModel.
+        Initializes the base model
         """
         if kwargs:
             for key, value in kwargs.items():
                 if key != '__class__':
                     setattr(self, key, value)
-            if hasattr(self, 'created_at') and type(self.created_at) is str:
-                self.created_at = datetime.fromisoformat(self.created_at)
-            if hasattr(self, 'updated_at') and type(self.updated_at) is str:
-                self.updated_at = datetime.fromisoformat(self.updated_at)
+            self.created_at = datetime.strptime(
+                self.created_at, '%Y-%m-%dT%H:%M:%S.%f'
+            )
+            self.updated_at = datetime.strptime(
+                self.updated_at, '%Y-%m-%dT%H:%M:%S.%f'
+            )
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
-            self.updated_at = self.created_at
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """
-        Return the string representation of the BaseModel instance.
+        Returns a string representation of the object
         """
-        return "[{}] ({}) {}".format(self.__class__.__name__, self.id,
-                                     self.__dict__)
+        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         """
-        Update the updated_at attribute with the current datetime.
+        Updates the 'updated_at' attribute with the current datetime
         """
         self.updated_at = datetime.now()
 
     def to_dict(self):
         """
-        Return a dictionary containing all keys/values of the instance.
+        Returns a dictionary containing all keys/values of the instance
         """
-        instance_dict = self.__dict__.copy()
-        instance_dict['__class__'] = self.__class__.__name__
-        instance_dict['created_at'] = self.created_at.isoformat()
-        instance_dict['updated_at'] = self.updated_at.isoformat()
-        return instance_dict
+        dictionary = self.__dict__.copy()
+        dictionary['__class__'] = self.__class__.__name__
+        dictionary['created_at'] = self.created_at.isoformat()
+        dictionary['updated_at'] = self.updated_at.isoformat()
+        return dictionary
 
