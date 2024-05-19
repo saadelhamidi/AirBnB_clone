@@ -13,7 +13,7 @@ class FileStorage:
     def all(self):
         """Returns the dictionary __objects"""
         return type(self).__objects
-    
+
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
         type(self).__objects[obj.__class__.__name__ + '.' + str(obj.id)] = obj
@@ -38,12 +38,12 @@ class FileStorage:
         from models.place import Place
         from models.review import Review
         classes = {'BaseModel': BaseModel,
-                    'User': User,
-                    'State': State,
-                    'City': City,
-                    'Amenity': Amenity,
-                    'Place': Place,
-                    'Review': Review}
+                   'User': User,
+                   'State': State,
+                   'City': City,
+                   'Amenity': Amenity,
+                   'Place': Place,
+                   'Review': Review}
         return classes
 
     def reload(self):
