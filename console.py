@@ -9,7 +9,7 @@ import json
 
 class HBNBCommand(cmd.Cmd):
     """Defines a class which is the entry point command interpreter"""
-    intro = "Welcome to the AirBnB clone console! Type 'help' to list commands. \n"
+    intro = "Welcome to the AirBnB console! tp 'help' to commands. \n"
     prompt = "(hbnb) "
 
     def do_quit(self, line):
