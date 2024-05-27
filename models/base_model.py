@@ -24,19 +24,19 @@ class BaseModel:
             storage.new(self)
 
     def __str__(self):
-        """Prints class name, id, and dictionary of using class"""
+        """Print class name, id, and dictionary of using class"""
         return "[{}] ({}) {}"\
             .format(type(self).__name__, self.id, self.__dict__)
 
     def save(self):
-        """updates the public instance attribute
+        """updates any public instance attribute
         update_at var to current time"""
         self.updated_at = datetime.now()
         storage.save()
 
     def to_dict(self):
         """Returns a dictionary containing all
-        key/value pairs of an instance"""
+        key/value pairs of the instance"""
         obj_dict = self.__dict__.copy()
         for key, value in self.__dict__.items():
             if key == 'created_at' or key == 'updated_at':

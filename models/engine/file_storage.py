@@ -14,7 +14,7 @@ class FileStorage:
         """Returns the dictionary __objects"""
         return type(self).__objects
 
-    def new(self, obj):
+    def start(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
         type(self).__objects[obj.__class__.__name__ + '.' + str(obj.id)] = obj
 
@@ -46,7 +46,7 @@ class FileStorage:
                    'Review': Review}
         return classes
 
-    def reload(self):
+    def load(self):
         """deserializes the JSON file to __objects(Only if the JSON file
         (__file_path)exists; otherwise, does nothing. if the file doesn't exist
         no exception is raised)"""

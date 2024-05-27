@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""A program the contains the entry point for the command interpreter"""
+"""A program that contains the entry point for the command interpreter"""
 import cmd
 from models.base_model import BaseModel
 from models import storage
@@ -8,7 +8,7 @@ import json
 
 
 class HBNBCommand(cmd.Cmd):
-    """Defines a class which is the entry point command interpreter"""
+    """Defines a class which this is the entry point command interpreter"""
     intro = "Welcome to the AirBnB console! tp 'help' to commands. \n"
     prompt = "(hbnb) "
 
@@ -31,7 +31,7 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, line):
-        """Creates a new instance of BaseModel, saves it (to the JSON)
+        """Creates a new instance of BaseModel, save it (in the JSON)
         and prints the id."""
         args = line.split()
         if not args:
@@ -49,8 +49,8 @@ class HBNBCommand(cmd.Cmd):
             return
 
     def do_show(self, line):
-        """Prints the string representation of an instance based on the class
-        name and id. Ex: $ show BaseModel 1234-1234-1234."""
+        """Print the string representation of the instance in the class
+        name and id. Ex:  show BaseModel 1234-1234-1234."""
         args = line.split()
 
         if not args:
